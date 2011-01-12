@@ -183,6 +183,7 @@ AC_SUBST(OCAMLBIN)
 AC_SUBST(OCAMLDOC)
 AC_SUBST(EXEC_PREFIX)
 AC_SUBST(ROOT)
+AC_SUBST(VERSION)
 
 # Finally create the master.Makefile.in
 ACFILES="master.Makefile "

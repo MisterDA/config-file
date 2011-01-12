@@ -556,6 +556,7 @@ PACKAGE_URL=
 ac_unique_file="master.Makefile.in"
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
+VERSION
 ROOT
 EXEC_PREFIX
 OCAMLBIN
@@ -2299,6 +2300,7 @@ fi
 
 #############################
 # substitutions to perform
+
 
 
 
