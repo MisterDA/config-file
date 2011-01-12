@@ -1,0 +1,9 @@
+doc
+config.log
+config.status
+*.cm*
+*.o
+*.a
+*.annot
+master.Makefile
+
