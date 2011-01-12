@@ -111,6 +111,13 @@ REMOTE_DEST=zoggy@config-file.forge.ocamlcore.org:/home/groups/config-file/htdoc
 installsite: all doc
 	scp -r web/index.html web/style.css ocamldoc $(REMOTE_DEST)
 
+# distribution
+###############
+archive: dummy
+	git archive --prefix=config-file-$(VERSION)/ HEAD | gzip > /tmp/config-file-$(VERSION).tar.gz
+
+
+
 ###########################
 # additional dependencies
 ###########################

@@ -53,7 +53,7 @@ INSTALLDIR=$(DESTDIR)$(OCAMLLIB)
 #############
 
 ROOT=@ROOT@
-
+VERSION=@VERSION@
 
 # generic rules :
 #################
