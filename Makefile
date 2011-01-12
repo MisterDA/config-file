@@ -105,6 +105,12 @@ installopt: dummy
 	$(MKDIR) $(INSTALLDIR)
 	$(CP) config_file.cmi config_file.cmx config_file.o $(INSTALLDIR)
 
+# Web site install
+###################
+REMOTE_DEST=zoggy@config-file.forge.ocamlcore.org:/home/groups/config-file/htdocs/
+installsite: all doc
+	scp -r web/index.html web/style.css ocamldoc $(REMOTE_DEST)
+
 ###########################
 # additional dependencies
 ###########################
