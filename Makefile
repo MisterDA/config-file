@@ -49,8 +49,8 @@ test: byte
 # Documentation :
 #################
 doc: dummy
-	$(MKDIR) doc
-	$(OCAMLDOC) -html -d doc -colorize-code \
+	$(MKDIR) ocamldoc
+	$(OCAMLDOC) -html -d ocamldoc -colorize-code \
 	-t "The Config_file library" \
 	config_file.mli config_file.ml
 

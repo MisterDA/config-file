@@ -1,5 +1,5 @@
 .chamo*
-doc
+ocamldoc
 config.log
 config.status
 *.cm*
