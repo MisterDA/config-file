@@ -7,4 +7,5 @@ config.status
 *.a
 *.annot
 master.Makefile
+autom4te.cache
 
