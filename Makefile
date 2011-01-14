@@ -110,7 +110,10 @@ installopt: dummy
 ###################
 REMOTE_DEST=zoggy@config-file.forge.ocamlcore.org:/home/groups/config-file/htdocs/
 installsite: all doc
-	scp -r web/index.html web/style.css ocamldoc $(REMOTE_DEST)
+	scp -r web/index.html web/style.css $(REMOTE_DEST)
+
+installsitedoc: installsite
+	scp -r ocamldoc $(REMOTE_DESC)
 
 # distribution
 ###############
