@@ -31,27 +31,27 @@ include master.Makefile
 # Compilation
 #############
 
+all: byte opt
 byte: lib
 opt: libopt
-all: byte opt
 lib: config_file.cmi config_file.cmo
 libopt: config_file.cmi config_file.cmx
 
 re : depend clean all
 
 parser: config_file_parser.ml4
-	camlp4 pa_o.cmo pa_op.cmo pr_o.cmo -- -o config_file_parser.ml -impl config_file_parser.ml4
+	$(CAMLP4) pa_o.cmo pa_op.cmo pr_o.cmo -- -o config_file_parser.ml -impl config_file_parser.ml4
 
-example: byte
-	ocaml config_file.cmo example.ml
-test: byte
-	ocaml config_file.cmo test.ml
+example: byte example.ml
+	$(OCAMLFIND) ocamlc -o $@ config_file.cmo example.ml
+test: byte test.ml
+	$(OCAMLFIND) ocamlc -o $@ ocaml config_file.cmo test.ml
 
 # Documentation :
 #################
 doc: dummy
 	$(MKDIR) ocamldoc
-	$(OCAMLDOC) -html -d ocamldoc -colorize-code \
+	$(OCAMLFIND) ocamldoc -html -d ocamldoc -colorize-code \
 	-t "The Config_file library" \
 	config_file.mli config_file.ml
 
@@ -98,13 +98,12 @@ noheaders: dummy
 #################
 
 install: dummy
-	$(MKDIR) $(INSTALLDIR)
-	$(CP) config_file.cmi config_file.cmo $(INSTALLDIR)
-	if test -f config_file.cmx; then $(MAKE) installopt; fi
+	@$(OCAMLFIND) install config-file META \
+	  config_file.mli config_file.cmi config_file.cmo \
+	  `if test -f config_file.cmx; then echo config_file.cmx config_file.o; fi `
 
-installopt: dummy
-	$(MKDIR) $(INSTALLDIR)
-	$(CP) config_file.cmi config_file.cmx config_file.o $(INSTALLDIR)
+uninstall: dummy
+	$(OCAMLFIND) remove config-file
 
 # Web site install
 ###################

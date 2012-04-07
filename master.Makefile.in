@@ -28,27 +28,8 @@
 
 # Various commands and dir
 ##########################
-OCAMLBIN= @OCAMLBIN@
-OCAMLC   = @OCAMLC@ -warn-error F
-OCAMLOPT = @OCAMLOPT@ -warn-error F
-OCAMLDEP = @OCAMLDEP@
-OCAMLLEX = @OCAMLLEX@
-OCAMLYACC= @OCAMLYACC@
-OCAMLLIB = @OCAMLLIB@
-OCAMLDOCDIR= $(OCAMLLIB)/ocamldoc
-OCAMLBEST= @OCAMLBEST@
-OCAMLVERSION = @OCAMLVERSION@
-EXTRAC_CRC = $(OCAMLLIB)/extract_crc
-OCAMLDOC= @OCAMLDOC@
-
-# For installation
-##############
-MKDIR=mkdir -p
-CP=cp -f
-RM=rm -fr
-
-DESTDIR=   # For debian packagers
-INSTALLDIR=$(DESTDIR)$(OCAMLLIB)
+OCAMLFIND= @OCAMLFIND@
+CAMLP4=@CAMLP4@
 
 # Compilation
 #############
@@ -61,19 +42,14 @@ VERSION=@VERSION@
 .SUFFIXES: .mli .ml .cmi .cmo .cmx .mll .mly .tex .dvi .ps .pdf
 
 %.cmi:%.mli
-	$(OCAMLC) $(OCAMLPP) $(COMPFLAGS) -c $<
+	$(OCAMLFIND) ocamlc $(OCAMLPP) $(COMPFLAGS) -c $<
 
 %.cmo:%.ml
-	$(OCAMLC) $(OCAMLPP) $(COMPFLAGS) -c $<
+	$(OCAMLFIND) ocamlc $(OCAMLPP) $(COMPFLAGS) -c $<
 
 %.cmi %.cmo:%.ml
-	$(OCAMLC) $(OCAMLPP) $(COMPFLAGS) -c $<
+	$(OCAMLFIND) ocamlc $(OCAMLPP) $(COMPFLAGS) -c $<
 
 %.cmx %.o:%.ml
-	$(OCAMLOPT) $(OCAMLPP) $(COMPFLAGS) -c $<
+	$(OCAMLFIND) ocamlopt $(OCAMLPP) $(COMPFLAGS) -c $<
 
-%.ml:%.mll
-	$(OCAMLLEX) $<
-
-%.mli %.ml:%.mly
-	$(OCAMLYACC) -v $<
