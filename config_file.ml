@@ -131,8 +131,8 @@ Could be one day rewritten with ocamllex/yacc to be more robust, efficient, allo
   open Format
   (* formating convention: the caller has to open the box, close it and flush the output *)
   (* remarks on Format:
-     set_margin impose un appel à set_max_indent
-     sprintf et bprintf sont flushées à chaque appel*)
+     set_margin impose un appel Ã  set_max_indent
+     sprintf et bprintf sont flushÃ©es Ã  chaque appel*)
 
   (* pretty print a Raw.cp *)
   let rec save formatter = function
