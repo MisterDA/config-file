@@ -296,18 +296,7 @@ class group = object (self)
     save_queue formatter cps;
     print "@]@."; close_out out_channel
 
-  method read ?obsoletes ?(no_default=false)
-      ?(on_type_error = fun groupable_cp raw_cp output filename in_channel ->
-          close_in in_channel;
-          Printf.eprintf
-            "Type error while loading configuration parameter %s from file %s.\n%!"
-            (String.concat "." groupable_cp#get_name) filename;
-          output stderr;
-          exit 1)
-      filename =
-    (* [filename] is created if it doesn't exist. In this case there is no need to read it. *)
-    match Sys.file_exists filename with false -> self#write filename | true ->
-    let in_channel = open_in filename in
+  method private read_from ?obsoletes no_default on_type_error raw_of_input =
     (* what to do when a cp is missing: *)
     let missing cp default = if no_default then raise (Missing_cp cp) else default in
     (* returns a cp contained in the nametree queue, which must be nonempty *)
@@ -320,7 +309,7 @@ class group = object (self)
        defined in [raw_cps] and returns the remaining raw_cps. *)
     let set_cp cp value =
       try cp#set_raw value
-      with Wrong_type output -> on_type_error cp value output filename in_channel in
+      with Wrong_type output -> on_type_error cp value output in
     let rec set_and_remove raw_cps = function
       | name, Immediate cp ->
           (try list_assoc_remove name (fun value -> set_cp cp value; None) raw_cps
@@ -336,7 +325,7 @@ class group = object (self)
              raw_cps
            with Not_found -> missing (choose queue) raw_cps)
     and remainings raw_cps queue = Queue.fold set_and_remove raw_cps queue in
-    let remainings = remainings (Raw.of_channel in_channel) cps in
+    let remainings = remainings raw_of_input cps in
     (* Handling of cps defined in filename but not belonging to self. *)
     if remainings <> [] then match obsoletes with
       | Some filename ->
@@ -349,6 +338,34 @@ class group = object (self)
           Format.fprintf formatter "@]@.";
           close_out out_channel
       | None -> ()
+
+  method read ?obsoletes ?(no_default=false)
+    ?(on_type_error = fun groupable_cp raw_cp output filename in_channel ->
+      close_in in_channel;
+      Printf.eprintf
+        "Type error while loading configuration parameter %s from file %s.\n%!"
+        (String.concat "." groupable_cp#get_name) filename;
+      output stderr;
+      exit 1)
+    filename =
+    (* [filename] is created if it doesn't exist. In this case there is no need to read it. *)
+    match Sys.file_exists filename with false -> self#write filename | true ->
+    let in_channel = open_in filename in
+    let on_type_error cp value output = on_type_error cp value output filename in_channel in
+    self#read_from ?obsoletes no_default on_type_error (Raw.of_channel in_channel);
+    close_in in_channel
+
+  method read_string ?obsoletes ?(no_default=false)
+    ?(on_type_error = fun groupable_cp raw_cp output string ->
+      Printf.eprintf
+        "Type error while loading configuration parameter %s.\n%!"
+        (String.concat "." groupable_cp#get_name);
+      output stderr;
+      exit 1)
+    input_string =
+    let on_type_error cp value output = on_type_error cp value output input_string in
+    let raw_of_string s = s |> Stream.of_string |> Raw.Parse.lexer |> Raw.Parse.file [] in
+    self#read_from ?obsoletes no_default on_type_error (raw_of_string input_string)
 
   method command_line_args ~section_separator =
     let print = Format.fprintf Format.str_formatter in (* shortcut *)

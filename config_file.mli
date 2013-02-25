@@ -186,6 +186,16 @@ class group : object
                           string -> in_channel -> unit) ->
       string -> unit
 
+    (** [read_string string] reads the content of [string]
+        and stores the values it specifies into the cps belonging to this group.
+
+        This method behaves just like read for the others aspects.
+    *)
+    method read_string : ?obsoletes:string -> ?no_default:bool ->
+      ?on_type_error : (groupable_cp -> Raw.cp -> (out_channel -> unit) ->
+                          string -> unit) ->
+      string -> unit
+
     (** Interface with module Arg.
       @param section_separator the string used to concatenate the name of a cp,
       to get the command line option name.
