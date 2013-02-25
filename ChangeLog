@@ -1,3 +1,7 @@
+2013-02-25  Maxence Guesdon  <Maxence.Guesdon@inria.fr>
+
+	* add: new read_string method, thanks to Armaël Guéneau
+
 2012-04-11  Maxence Guesdon  <Maxence.Guesdon@inria.fr>
 
 	* release 1.1: use findlib to install
