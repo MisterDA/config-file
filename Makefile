@@ -35,9 +35,12 @@ all: byte opt
 byte: lib
 opt: libopt
 lib: config_file.cmi config_file.cmo
-libopt: config_file.cmi config_file.cmx
+libopt: config_file.cmi config_file.cmx config_file.cmxs
 
 re : depend clean all
+
+config_file.cmxs: config_file.cmx
+	$(OCAMLFIND) ocamlopt -o $@ -shared $<
 
 parser: config_file_parser.ml4
 	$(CAMLP4) pa_o.cmo pa_op.cmo pr_o.cmo -- -o config_file_parser.ml -impl config_file_parser.ml4
@@ -100,7 +103,8 @@ noheaders: dummy
 install: dummy
 	@$(OCAMLFIND) install config-file META \
 	  config_file.mli config_file.cmi config_file.cmo \
-	  `if test -f config_file.cmx; then echo config_file.cmx config_file.o; fi `
+	  `if test -f config_file.cmx; then echo config_file.cmx config_file.o; fi ` \
+	  `if test -f config_file.cmxs; then echo config_file.cmxs; fi `
 
 uninstall: dummy
 	$(OCAMLFIND) remove config-file

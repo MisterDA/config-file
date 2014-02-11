@@ -1,3 +1,7 @@
+2014-02-11  Maxence Guesdon  <Maxence.Guesdon@inria.fr>
+
+	* add: compile and install .cmxs files
+
 2013-02-25  Maxence Guesdon  <Maxence.Guesdon@inria.fr>
 
 	* add: new read_string method, thanks to Armaël Guéneau
