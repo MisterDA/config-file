@@ -1673,7 +1673,7 @@ ROOT=`pwd`
 
 # Check for Ocaml compilers
 
-OCAML_NEEDED=3.08.0
+OCAML_NEEDED=4.00
 
 # we first look for ocamlfind in the path; if not present, we fail
 # Extract the first word of "ocamlfind", so it can be a program name with args.
