@@ -34,7 +34,7 @@ ROOT=`pwd`
 
 # Check for Ocaml compilers
 
-OCAML_NEEDED=3.08.0
+OCAML_NEEDED=4.00
 
 # we first look for ocamlfind in the path; if not present, we fail
 AC_PATH_PROG(OCAMLFIND,ocamlfind,no)
