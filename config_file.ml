@@ -445,7 +445,7 @@ let int_wrappers = {
                                 "Raw.Int expected, got %a\n%!" Raw.to_channel r))}
 class int_cp ?group name ?short_name default help = object (self)
   inherit [int] cp_custom_type int_wrappers ?group name ?short_name default help
-  method get_spec = Arg.Int self#set
+  method! get_spec = Arg.Int self#set
 end
 
 let float_wrappers = {
@@ -458,7 +458,7 @@ let float_wrappers = {
 }
 class float_cp ?group name ?short_name default help = object (self)
   inherit [float] cp_custom_type float_wrappers ?group name ?short_name default help
-  method get_spec = Arg.Float self#set
+  method! get_spec = Arg.Float self#set
 end
 
 (* The Pervasives version is too restrictive *)
@@ -478,7 +478,7 @@ let bool_wrappers = {
 }
 class bool_cp ?group name ?short_name default help = object (self)
   inherit [bool] cp_custom_type bool_wrappers ?group name ?short_name default help
-  method get_spec = Arg.Bool self#set
+  method! get_spec = Arg.Bool self#set
 end
 
 let string_wrappers = {
@@ -493,7 +493,7 @@ let string_wrappers = {
 class string_cp ?group name ?short_name default help = object (self)
   inherit [string] cp_custom_type string_wrappers ?group name ?short_name default help
   method private of_string s = s
-  method get_spec = Arg.String self#set
+  method! get_spec = Arg.String self#set
 end
 
 let list_wrappers wrappers = {
@@ -531,7 +531,7 @@ let enumeration_wrappers enum =
 class ['a] enumeration_cp enum ?group name ?short_name default help = object (self)
   inherit ['a] cp_custom_type (enumeration_wrappers enum)
     ?group name ?short_name default help
-  method get_spec = Arg.Symbol (List.map fst enum, (fun s -> self#set (List.assoc s enum)))
+  method! get_spec = Arg.Symbol (List.map fst enum, (fun s -> self#set (List.assoc s enum)))
 end
 
 let tuple2_wrappers wrapa wrapb = {
