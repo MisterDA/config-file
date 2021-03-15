@@ -340,7 +340,7 @@ class group = object (self)
       | None -> ()
 
   method read ?obsoletes ?(no_default=false)
-    ?(on_type_error = fun groupable_cp raw_cp output filename in_channel ->
+    ?(on_type_error = fun groupable_cp _raw_cp output filename in_channel ->
       close_in in_channel;
       Printf.eprintf
         "Type error while loading configuration parameter %s from file %s.\n%!"
@@ -356,7 +356,7 @@ class group = object (self)
     close_in in_channel
 
   method read_string ?obsoletes ?(no_default=false)
-    ?(on_type_error = fun groupable_cp raw_cp output string ->
+    ?(on_type_error = fun groupable_cp _raw_cp output _string ->
       Printf.eprintf
         "Type error while loading configuration parameter %s.\n%!"
         (String.concat "." groupable_cp#get_name);
@@ -583,7 +583,7 @@ let load {filename=f; group = g} = g#read f
 let append {group=g; _} filename = g#read filename
 let save {filename=f; group = g} = g#write ~with_help:false f
 let save_with_help {filename=f; group = g} = g#write ~with_help:true f
-let define_option {group; _} name help option_class default =
+let _define_option {group; _} name help option_class default =
   (new cp_custom_type option_class ~group name default help)
 let option_hook cp f = cp#add_hook (fun _ _ -> f ())
 
