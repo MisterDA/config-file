@@ -580,10 +580,10 @@ type options_file = {mutable filename:string; group:group}
 let create_options_file filename = {filename = filename; group = new group}
 let set_options_file options_file filename = options_file.filename <- filename
 let load {filename=f; group = g} = g#read f
-let append {group=g} filename = g#read filename
+let append {group=g; _} filename = g#read filename
 let save {filename=f; group = g} = g#write ~with_help:false f
 let save_with_help {filename=f; group = g} = g#write ~with_help:true f
-let define_option {group=group} name help option_class default =
+let define_option {group; _} name help option_class default =
   (new cp_custom_type option_class ~group name default help)
 let option_hook cp f = cp#add_hook (fun _ _ -> f ())
 
@@ -636,8 +636,8 @@ let define_option_class _ of_option_value to_option_value =
   {to_raw = (fun a -> a |> to_option_value |> value_to_raw);
    of_raw = (fun a -> a |> raw_to_value |> of_option_value)}
 
-let to_value {to_raw = to_raw} a = a |> to_raw |> raw_to_value
-let from_value {of_raw = of_raw} a = a |> value_to_raw |> of_raw
+let to_value {to_raw; _} a = a |> to_raw |> raw_to_value
+let from_value {of_raw; _} a = a |> value_to_raw |> of_raw
 
 let of_value_w wrappers a = a |> value_to_raw |> wrappers.of_raw
 let to_value_w wrappers a = a |> wrappers.to_raw |> raw_to_value
