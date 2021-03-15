@@ -463,7 +463,7 @@ end
 
 (* The Pervasives version is too restrictive *)
 let bool_of_string s =
-  match String.lowercase s with
+  match String.lowercase_ascii s with
     | "false" | "no" | "n" | "0" -> false (* "0" and "1" aren't used. *)
     | "true" | "yes" | "y" | "1" -> true
     | r -> raise (Wrong_type (fun outchan -> Printf.fprintf outchan
