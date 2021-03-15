@@ -97,7 +97,7 @@ let safe_string s =
           try
             string_of_int (int_of_string s) <> s ||
             string_of_float (float_of_string s) <> s
-          with Failure "int_of_string" | Failure "float_of_string" -> true
+          with Failure _ -> true
     with Unsafe_string -> true)
   then Printf.sprintf "\"%s\"" (String.escaped s)
   else s
