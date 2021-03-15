@@ -1,3 +1,8 @@
+2021-03-15 Antonin Décimo <antonin@tarides.com>
+
+	* switch to the Dune build system
+	* fix compiler warnings
+
 2014-02-11  Maxence Guesdon  <Maxence.Guesdon@inria.fr>
 
 	* add: compile and install .cmxs files
