@@ -1,7 +1,0 @@
-version="1.2"
-description="a library to manage the configuration file(s) of an application"
-archive(byte)="config_file.cmo"
-archive(native)="config_file.cmx"
-archive(plugin,byte)="config_file.cmo"
-archive(plugin,native)="config_file.cmxs"
-

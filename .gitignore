@@ -1,12 +1,3 @@
-configure.lineno
-.chamo*
-ocamldoc
-config.log
-config.status
-*.cm*
-*.o
-*.a
-*.annot
-master.Makefile
-autom4te.cache
-
+_build/
+*.install
+_opam/
