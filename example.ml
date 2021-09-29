@@ -52,7 +52,7 @@ foo#set 28;
 Printf.printf "foo is %d\n%!" foo#get;
 
 (* How to define command line arguments and print them (see module Arg): *)
-Arg.usage (group#command_line_args "-") "usage message"
+Arg.usage (group#command_line_args ~section_separator:"-") "usage message"
 
 (* We define a new type of cp: *)
 let int64_wrappers =
@@ -83,7 +83,7 @@ class int64_cp = [int64] cp_custom_type int64_wrappers
 let log_file = open_out "foo.log";;
 
 group#read
-  ~on_type_error:(fun groupable_cp raw_cp output filename in_channel ->
+  ~on_type_error:(fun groupable_cp _raw_cp output filename _in_channel ->
     Printf.fprintf log_file
       "Type error while loading configuration parameter %s from file %s.\n%!"
       (String.concat "." groupable_cp#get_name)
