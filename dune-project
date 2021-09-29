@@ -25,4 +25,5 @@
  )
  (depends
   (ocaml (>= 4.02))
+  (camlp4 :build)
   (cppo :build)))

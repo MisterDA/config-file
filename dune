@@ -1,12 +1,20 @@
 (rule
- (target config_file.ml)
- (deps config_file.cppo.ml)
+ (target config_file_parser.ml)
+ (deps config_file_parser.ml4)
  (action
-  (with-stdout-to
-   %{target}
-   (chdir
-    %{workspace_root}
-    (run %{bin:cppo} -V OCAML:%{ocaml_version} %{deps})))))
+  (chdir
+   %{workspace_root}
+   (run %{bin:camlp4} pa_o.cmo pa_op.cmo pr_o.cmo -- -o %{target} -impl %{deps}))))
+
+(rule
+ (target config_file.ml)
+ (deps
+  (:cppo config_file.cppo.ml)
+  config_file_parser.ml)
+ (action
+  (chdir
+   %{workspace_root}
+   (run %{bin:cppo} -V OCAML:%{ocaml_version} -o %{target} %{cppo}))))
 
 (library
  (public_name config-file)
