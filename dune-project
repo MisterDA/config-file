@@ -2,6 +2,7 @@
 (name config-file)
 
 (generate_opam_files true)
+(formatting disabled)
 
 (source (github MisterDA/config-file))
 (license "LGPL-2.0-or-later")
@@ -23,4 +24,5 @@
 "\| options in the command line.
  )
  (depends
-  (ocaml (>= 4.02))))
+  (ocaml (>= 4.02))
+  (cppo :build)))

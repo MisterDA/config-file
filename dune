@@ -1,3 +1,13 @@
+(rule
+ (target config_file.ml)
+ (deps config_file.cppo.ml)
+ (action
+  (with-stdout-to
+   %{target}
+   (chdir
+    %{workspace_root}
+    (run %{bin:cppo} -V OCAML:%{ocaml_version} %{deps})))))
+
 (library
  (public_name config-file)
  (name config_file)

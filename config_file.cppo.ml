@@ -662,7 +662,11 @@ class float_cp ?group name ?short_name default help =
 
 (* The Pervasives version is too restrictive *)
 let bool_of_string s =
+#if OCAML_VERSION >= (4, 03, 0)
+  match String.lowercase_ascii s with
+#else
   match String.lowercase s with
+#endif
   | "false" | "no" | "n" | "0" -> false (* "0" and "1" aren't used. *)
   | "true" | "yes" | "y" | "1" -> true
   | r ->
