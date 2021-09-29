@@ -19,12 +19,7 @@
 (*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA                   *)
 (*    02111-1307  USA                                                            *)
 (*                                                                               *)
-(*    Contact: Maxence.Guesdon@inria.fr                                          *)
-(*                                                                               *)
-(*                                                                               *)
 (*********************************************************************************)
-
-(* $Id: config_file.ml 749 2010-06-17 06:52:00Z zoggy $ *)
 
 (* TODO *)
 (* section comments *)
