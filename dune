@@ -4,7 +4,16 @@
  (action
   (chdir
    %{workspace_root}
-   (run %{bin:camlp4} pa_o.cmo pa_op.cmo pr_o.cmo -- -o %{target} -impl %{deps}))))
+   (run
+    %{bin:camlp4}
+    pa_o.cmo
+    pa_op.cmo
+    pr_o.cmo
+    --
+    -o
+    %{target}
+    -impl
+    %{deps}))))
 
 (rule
  (target config_file.ml)

@@ -1,8 +1,8 @@
-(lang dune 2.9)
+(lang dune 3.6)
 (name config-file)
 
 (generate_opam_files true)
-(formatting disabled)
+(formatting (enabled_for dune))
 
 (source (github MisterDA/config-file))
 (license "LGPL-2.0-or-later")
