@@ -20,6 +20,7 @@ bug-reports: "https://github.com/MisterDA/config-file/issues"
 depends: [
   "dune" {>= "2.9"}
   "ocaml" {>= "4.02"}
+  "camlp-streams"
   "camlp4" {build}
   "cppo" {build}
   "odoc" {with-doc}
