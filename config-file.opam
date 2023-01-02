@@ -18,7 +18,7 @@ license: "LGPL-2.0-or-later"
 homepage: "https://github.com/MisterDA/config-file"
 bug-reports: "https://github.com/MisterDA/config-file/issues"
 depends: [
-  "dune" {>= "2.9"}
+  "dune" {>= "3.6"}
   "ocaml" {>= "4.02"}
   "camlp-streams"
   "camlp4" {build}
@@ -34,11 +34,9 @@ build: [
     name
     "-j"
     jobs
-    "--promote-install-files=false"
     "@install"
     "@runtest" {with-test}
     "@doc" {with-doc}
   ]
-  ["dune" "install" "-p" name "--create-install-files" name]
 ]
 dev-repo: "git+https://github.com/MisterDA/config-file.git"
