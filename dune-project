@@ -25,5 +25,6 @@
  )
  (depends
   (ocaml (>= 4.02))
+  camlp-streams
   (camlp4 :build)
   (cppo :build)))

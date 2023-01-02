@@ -19,4 +19,5 @@
 (library
  (public_name config-file)
  (name config_file)
- (modules Config_file))
+ (modules Config_file)
+ (libraries camlp-streams))
