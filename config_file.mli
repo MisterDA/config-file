@@ -76,7 +76,8 @@ exception Wrong_type of (out_channel -> unit)
 (** A Configuration Parameter, in short {e cp}, i.e. a value we can store in and
    read from a configuration file. *)
 class type ['a] cp = object
-  (** {1 Accessing methods} *)
+
+  (** {3 Accessing methods} *)
 
   method get : 'a
   method set : 'a -> unit
@@ -87,7 +88,7 @@ class type ['a] cp = object
   method reset : unit
   (** Resets to the default value. *)
 
-  (** {1 Miscellaneous} *)
+  (** {3 Miscellaneous} *)
 
   method add_hook : ('a -> 'a -> unit) -> unit
   (** All the hooks are executed each time the method set is called, just
@@ -101,7 +102,7 @@ class type ['a] cp = object
   (** [None] if no optional short_name was provided during object creation and
        [set_short_name] was never called.*)
 
-  (** {1 Methods for internal use} *)
+  (** {3 Methods for internal use} *)
 
   method get_formatted : Format.formatter -> unit
   method get_default_formatted : Format.formatter -> unit
