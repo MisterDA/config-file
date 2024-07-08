@@ -1,4 +1,4 @@
-(lang dune 3.6)
+(lang dune 3.16)
 (name config-file)
 
 (generate_opam_files true)
@@ -27,4 +27,4 @@
   (ocaml (>= 4.02))
   camlp-streams
   (camlp4 :build)
-  (cppo :build)))
+  (cppo (and (>= 1.6.7) :build))))
