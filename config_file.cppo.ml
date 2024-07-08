@@ -195,39 +195,25 @@ let print_help formatter =
 
 type 'a wrappers = { to_raw : 'a -> Raw.cp; of_raw : Raw.cp -> 'a }
 
-class type ['a] cp =
-  object
-    (*   method private to_raw = wrappers.to_raw *)
-    (*   method private of_raw = wrappers.of_raw *)
-    (*   method private set_string s = s |> Raw.of_string |> self#of_raw |> self#set *)
-    method add_hook : ('a -> 'a -> unit) -> unit
-
-    method get : 'a
-
-    method get_default : 'a
-
-    method set : 'a -> unit
-
-    method reset : unit
-
-    method get_formatted : Format.formatter -> unit
-
-    method get_default_formatted : Format.formatter -> unit
-
-    method get_help_formatted : Format.formatter -> unit
-
-    method get_name : string list
-
-    method get_short_name : string option
-
-    method set_short_name : string -> unit
-
-    method get_help : string
-
-    method get_spec : Arg.spec
-
-    method set_raw : Raw.cp -> unit
-  end
+class type ['a] cp = object
+  (*   method private to_raw = wrappers.to_raw *)
+  (*   method private of_raw = wrappers.of_raw *)
+  (*   method private set_string s = s |> Raw.of_string |> self#of_raw |> self#set *)
+  method add_hook : ('a -> 'a -> unit) -> unit
+  method get : 'a
+  method get_default : 'a
+  method set : 'a -> unit
+  method reset : unit
+  method get_formatted : Format.formatter -> unit
+  method get_default_formatted : Format.formatter -> unit
+  method get_help_formatted : Format.formatter -> unit
+  method get_name : string list
+  method get_short_name : string option
+  method set_short_name : string -> unit
+  method get_help : string
+  method get_spec : Arg.spec
+  method set_raw : Raw.cp -> unit
+end
 
 type groupable_cp =
   < get_name : string list
@@ -241,14 +227,11 @@ type groupable_cp =
   ; set_raw : Raw.cp -> unit >
 
 exception Double_name
-
 exception Missing_cp of groupable_cp
-
 exception Wrong_type of (out_channel -> unit)
 
 (* Two exceptions to stop the iteration on queues. *)
 exception Found
-
 exception Found_cp of groupable_cp
 
 (* The data structure to store the cps.
@@ -468,14 +451,11 @@ class ['a] cp_custom_type wrappers ?(group : group option) name ?short_name
   default help =
   object (self)
     method private to_raw = wrappers.to_raw
-
     method private of_raw = wrappers.of_raw
-
     val mutable value = default
 
     (* output *)
     method get = value
-
     method get_default = default
 
     method get_formatted formatter =
@@ -491,34 +471,24 @@ class ['a] cp_custom_type wrappers ?(group : group option) name ?short_name
       self#exec_hooks v' v
 
     method set_raw v = self#of_raw v |> self#set
-
     method private set_string s = s |> Raw.of_string |> self#of_raw |> self#set
-
     method reset = self#set self#get_default
 
     (* name *)
     val mutable shortname = short_name
-
     method get_name = name
-
     method get_short_name = shortname
-
     method set_short_name s = shortname <- Some s
 
     (* help *)
     method get_help = help
-
     method get_help_formatted formatter = print_help formatter self#get_help
-
     method get_spec = Arg.String self#set_string
 
     (* hooks *)
     val mutable hooks = []
-
     method add_hook f = hooks <- (f : 'a -> 'a -> unit) :: hooks
-
     method private exec_hooks v' v = List.iter (fun f -> f v' v) hooks
-
     initializer match group with Some g -> g#add (self :> 'a cp) | None -> ()
   end
 
@@ -632,7 +602,6 @@ class string_cp ?group name ?short_name default help =
         string_wrappers ?group name ?short_name default help
 
     method private of_string s = s
-
     method! get_spec = Arg.String self#set
   end
 
@@ -760,7 +729,6 @@ class string2_cp = [string, string] tuple2_cp string_wrappers string_wrappers
 
 (* class color_cp = string_cp *)
 class font_cp = string_cp
-
 class filename_cp = string_cp
 
 (* ******************************************************************************** *)
@@ -768,60 +736,36 @@ class filename_cp = string_cp
 (* ******************************************************************************** *)
 
 type 'a option_class = 'a wrappers
-
 type 'a option_record = 'a cp
-
 type options_file = { mutable filename : string; group : group }
 
 let create_options_file filename = { filename; group = new group }
-
 let set_options_file options_file filename = options_file.filename <- filename
-
 let load { filename = f; group = g } = g#read f
-
 let append { group = g; _ } filename = g#read filename
-
 let save { filename = f; group = g } = g#write ~with_help:false f
-
 let save_with_help { filename = f; group = g } = g#write ~with_help:true f
 
 let _define_option { group; _ } name help option_class default =
   new cp_custom_type option_class ~group name default help
 
 let option_hook cp f = cp#add_hook (fun _ _ -> f ())
-
 let string_option = string_wrappers
-
 let color_option = string_wrappers
-
 let font_option = string_wrappers
-
 let int_option = int_wrappers
-
 let bool_option = bool_wrappers
-
 let float_option = float_wrappers
-
 let string2_option = tuple2_wrappers string_wrappers string_wrappers
-
 let option_option = option_wrappers
-
 let list_option = list_wrappers
-
 let sum_option = enumeration_wrappers
-
 let tuple2_option (a, b) = tuple2_wrappers a b
-
 let tuple3_option (a, b, c) = tuple3_wrappers a b c
-
 let tuple4_option (a, b, c, d) = tuple4_wrappers a b c d
-
 let ( !! ) cp = cp#get
-
 let ( =:= ) cp value = cp#set value
-
 let shortname cp = String.concat ":" cp#get_name
-
 let get_help cp = cp#get_help
 
 type option_value =
@@ -859,32 +803,20 @@ let define_option_class _ of_option_value to_option_value =
   }
 
 let to_value { to_raw; _ } a = a |> to_raw |> raw_to_value
-
 let from_value { of_raw; _ } a = a |> value_to_raw |> of_raw
-
 let of_value_w wrappers a = a |> value_to_raw |> wrappers.of_raw
-
 let to_value_w wrappers a = a |> wrappers.to_raw |> raw_to_value
 
 (* fancy indentation when finishing this stub code, not good style :-) *)
 let value_to_string : option_value -> string = of_value_w string_option
-
 let string_to_value = to_value_w string_option
-
 let value_to_int = of_value_w int_option
-
 let int_to_value = to_value_w int_option
-
 let value_to_bool = of_value_w bool_option
-
 let bool_to_value = to_value_w bool_option
-
 let value_to_float = of_value_w float_option
-
 let float_to_value = to_value_w float_option
-
 let value_to_string2 = of_value_w string2_option
-
 let string2_to_value = to_value_w string2_option
 
 let value_to_list of_value =
