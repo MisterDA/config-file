@@ -2,7 +2,6 @@
 (name config-file)
 
 (generate_opam_files true)
-(formatting (enabled_for dune))
 
 (source (github MisterDA/config-file))
 (license "LGPL-2.0-or-later")

@@ -75,50 +75,40 @@ exception Wrong_type of (out_channel -> unit)
 
 (** A Configuration Parameter, in short {e cp}, i.e. a value we can store in and
    read from a configuration file. *)
-class type ['a] cp =
-  object
+class type ['a] cp = object
+  (** {1 Accessing methods} *)
 
-    (** {1 Accessing methods} *)
+  method get : 'a
+  method set : 'a -> unit
+  method get_default : 'a
+  method get_help : string
+  method get_name : string list
 
-    method get : 'a
+  method reset : unit
+  (** Resets to the default value. *)
 
-    method set : 'a -> unit
+  (** {1 Miscellaneous} *)
 
-    method get_default : 'a
-
-    method get_help : string
-
-    method get_name : string list
-
-    method reset : unit
-    (** Resets to the default value. *)
-
-    (** {1 Miscellaneous} *)
-
-    method add_hook : ('a -> 'a -> unit) -> unit
-    (** All the hooks are executed each time the method set is called, just
+  method add_hook : ('a -> 'a -> unit) -> unit
+  (** All the hooks are executed each time the method set is called, just
        after setting the new value.*)
 
-    method set_short_name : string -> unit
-    (** Used to generate command line arguments in
+  method set_short_name : string -> unit
+  (** Used to generate command line arguments in
        {!Config_file.group.command_line_args}. *)
 
-    method get_short_name : string option
-    (** [None] if no optional short_name was provided during object creation and
+  method get_short_name : string option
+  (** [None] if no optional short_name was provided during object creation and
        [set_short_name] was never called.*)
 
-    (** {1 Methods for internal use} *)
+  (** {1 Methods for internal use} *)
 
-    method get_formatted : Format.formatter -> unit
-
-    method get_default_formatted : Format.formatter -> unit
-
-    method get_help_formatted : Format.formatter -> unit
-
-    method get_spec : Arg.spec
-
-    method set_raw : Raw.cp -> unit
-  end
+  method get_formatted : Format.formatter -> unit
+  method get_default_formatted : Format.formatter -> unit
+  method get_help_formatted : Format.formatter -> unit
+  method get_spec : Arg.spec
+  method set_raw : Raw.cp -> unit
+end
 
 type groupable_cp =
   < get_name : string list
@@ -147,32 +137,31 @@ exception Missing_cp of groupable_cp
    The basic usage is to have only one group and one configuration file, but
    this mechanism allows to have more, for instance to have another smaller
    group for the options to pass on the command line. *)
-class group :
-  object
-    (*     method add : 'a cp -> 'a cp *)
-    method add : 'a cp -> unit
-    (** Adds a cp to the group. Note that the type ['a] must be lost to allow
+class group : object
+  (*     method add : 'a cp -> 'a cp *)
+  method add : 'a cp -> unit
+  (** Adds a cp to the group. Note that the type ['a] must be lost to allow
        cps of different types to belong to the same group.
 
        @raise Double_name if [cp#get_name] is already used. *)
 
-    method write : ?with_help:bool -> string -> unit
-    (** [write filename] saves all the cps into the configuration file
+  method write : ?with_help:bool -> string -> unit
+  (** [write filename] saves all the cps into the configuration file
        [filename].*)
 
-    method read :
-      ?obsoletes:string ->
-      ?no_default:bool ->
-      ?on_type_error:
-        (groupable_cp ->
-        Raw.cp ->
-        (out_channel -> unit) ->
-        string ->
-        in_channel ->
-        unit) ->
+  method read :
+    ?obsoletes:string ->
+    ?no_default:bool ->
+    ?on_type_error:
+      (groupable_cp ->
+      Raw.cp ->
+      (out_channel -> unit) ->
       string ->
-      unit
-    (** [read filename] reads [filename] and stores the values it specifies into
+      in_channel ->
+      unit) ->
+    string ->
+    unit
+  (** [read filename] reads [filename] and stores the values it specifies into
        the cps belonging to this group. The file is created (and not read) if it
        doesn't exists. In the default behaviour, no warning is issued. If not
        all cps are updated or if some values of [filename] aren't used.
@@ -194,27 +183,27 @@ class group :
       function to close it if needed. Default behaviour is to print an error
       message and call [exit 1]. *)
 
-    method read_string :
-      ?obsoletes:string ->
-      ?no_default:bool ->
-      ?on_type_error:
-        (groupable_cp -> Raw.cp -> (out_channel -> unit) -> string -> unit) ->
-      string ->
-      unit
-    (** [read_string string] reads the content of [string] and stores the values
+  method read_string :
+    ?obsoletes:string ->
+    ?no_default:bool ->
+    ?on_type_error:
+      (groupable_cp -> Raw.cp -> (out_channel -> unit) -> string -> unit) ->
+    string ->
+    unit
+  (** [read_string string] reads the content of [string] and stores the values
        it specifies into the cps belonging to this group.
 
         This method behaves just like read for the others aspects. *)
 
-    method command_line_args :
-      section_separator:string -> (string * Arg.spec * string) list
-    (** Interface with module Arg.
+  method command_line_args :
+    section_separator:string -> (string * Arg.spec * string) list
+  (** Interface with module Arg.
 
        @param section_separator the string used to concatenate the name of a cp,
               to get the command line option name. ["-"] is a good default.
 
        @return a list that can be used with [Arg.parse] and [Arg.usage]. *)
-  end
+end
 
 (** {2:predefined_cp_classes Predefined cp classes} *)
 
@@ -234,129 +223,129 @@ class group :
     needed. It is mandatory but can be [""]. *)
 
 class int_cp :
-  ?group:group -> string list -> ?short_name:string -> int -> string -> [int] cp
+  ?group:group ->
+  string list ->
+  ?short_name:string ->
+  int ->
+  string ->
+  [int] cp
 
 class float_cp :
-  ?group:group
-  -> string list
-  -> ?short_name:string
-  -> float
-  -> string
-  -> [float] cp
+  ?group:group ->
+  string list ->
+  ?short_name:string ->
+  float ->
+  string ->
+  [float] cp
 
 class bool_cp :
-  ?group:group
-  -> string list
-  -> ?short_name:string
-  -> bool
-  -> string
-  -> [bool] cp
+  ?group:group ->
+  string list ->
+  ?short_name:string ->
+  bool ->
+  string ->
+  [bool] cp
 
 class string_cp :
-  ?group:group
-  -> string list
-  -> ?short_name:string
-  -> string
-  -> string
-  -> [string] cp
+  ?group:group ->
+  string list ->
+  ?short_name:string ->
+  string ->
+  string ->
+  [string] cp
 
 class ['a] list_cp :
-  'a wrappers
-  -> ?group:group
-  -> string list
-  -> ?short_name:string
-  -> 'a list
-  -> string
-  -> ['a list] cp
+  'a wrappers ->
+  ?group:group ->
+  string list ->
+  ?short_name:string ->
+  'a list ->
+  string ->
+  ['a list] cp
 
 class ['a] option_cp :
-  'a wrappers
-  -> ?group:group
-  -> string list
-  -> ?short_name:string
-  -> 'a option
-  -> string
-  -> ['a option] cp
+  'a wrappers ->
+  ?group:group ->
+  string list ->
+  ?short_name:string ->
+  'a option ->
+  string ->
+  ['a option] cp
 
 class ['a] enumeration_cp :
-  (string * 'a) list
-  -> ?group:group
-  -> string list
-  -> ?short_name:string
-  -> 'a
-  -> string
-  -> ['a] cp
+  (string * 'a) list ->
+  ?group:group ->
+  string list ->
+  ?short_name:string ->
+  'a ->
+  string ->
+  ['a] cp
 
 class ['a, 'b] tuple2_cp :
-  'a wrappers
-  -> 'b wrappers
-  -> ?group:group
-  -> string list
-  -> ?short_name:string
-  -> 'a * 'b
-  -> string
-  -> ['a * 'b] cp
+  'a wrappers ->
+  'b wrappers ->
+  ?group:group ->
+  string list ->
+  ?short_name:string ->
+  'a * 'b ->
+  string ->
+  ['a * 'b] cp
 
 class ['a, 'b, 'c] tuple3_cp :
-  'a wrappers
-  -> 'b wrappers
-  -> 'c wrappers
-  -> ?group:group
-  -> string list
-  -> ?short_name:string
-  -> 'a * 'b * 'c
-  -> string
-  -> ['a * 'b * 'c] cp
+  'a wrappers ->
+  'b wrappers ->
+  'c wrappers ->
+  ?group:group ->
+  string list ->
+  ?short_name:string ->
+  'a * 'b * 'c ->
+  string ->
+  ['a * 'b * 'c] cp
 
 class ['a, 'b, 'c, 'd] tuple4_cp :
-  'a wrappers
-  -> 'b wrappers
-  -> 'c wrappers
-  -> 'd wrappers
-  -> ?group:group
-  -> string list
-  -> ?short_name:string
-  -> 'a * 'b * 'c * 'd
-  -> string
-  -> ['a * 'b * 'c * 'd] cp
+  'a wrappers ->
+  'b wrappers ->
+  'c wrappers ->
+  'd wrappers ->
+  ?group:group ->
+  string list ->
+  ?short_name:string ->
+  'a * 'b * 'c * 'd ->
+  string ->
+  ['a * 'b * 'c * 'd] cp
 
 class string2_cp :
-  ?group:group
-  -> string list
-  -> ?short_name:string
-  -> string * string
-  -> string
-  -> [string, string] tuple2_cp
+  ?group:group ->
+  string list ->
+  ?short_name:string ->
+  string * string ->
+  string ->
+  [string, string] tuple2_cp
 
 (* class color_cp : ?group:group -> string list -> ?short_name:string -> string -> string -> string_cp *)
 class font_cp :
-  ?group:group
-  -> string list
-  -> ?short_name:string
-  -> string
-  -> string
-  -> string_cp
+  ?group:group ->
+  string list ->
+  ?short_name:string ->
+  string ->
+  string ->
+  string_cp
 
 class filename_cp :
-  ?group:group
-  -> string list
-  -> ?short_name:string
-  -> string
-  -> string
-  -> string_cp
+  ?group:group ->
+  string list ->
+  ?short_name:string ->
+  string ->
+  string ->
+  string_cp
 
 (** {2:predefined_wrappers Predefined wrappers} *)
 
 val int_wrappers : int wrappers
-
 val float_wrappers : float wrappers
-
 val bool_wrappers : bool wrappers
-
 val string_wrappers : string wrappers
-
 val list_wrappers : 'a wrappers -> 'a list wrappers
-
 val option_wrappers : 'a wrappers -> 'a option wrappers
 
 val enumeration_wrappers : (string * 'a) list -> 'a wrappers
@@ -383,13 +372,13 @@ val tuple4_wrappers :
 (** {2 Defining new cp classes} *)
 
 class ['a] cp_custom_type :
-  'a wrappers
-  -> ?group:group
-  -> string list
-  -> ?short_name:string
-  -> 'a
-  -> string
-  -> ['a] cp
+  'a wrappers ->
+  ?group:group ->
+  string list ->
+  ?short_name:string ->
+  'a ->
+  string ->
+  ['a] cp
 (** To define a new cp class, you just have to provide an implementation for the
    wrappers between your type [foo] and the type {!Raw.cp}.
 
@@ -423,47 +412,29 @@ class foo_cp = [foo] cp_custom_type w
 (**/**)
 
 type 'a option_class
-
 type 'a option_record
-
 type options_file
 
 val create_options_file : string -> options_file
-
 val set_options_file : options_file -> string -> unit
-
 val load : options_file -> unit
-
 val append : options_file -> string -> unit
-
 val save : options_file -> unit
-
 val save_with_help : options_file -> unit
 
 (* val define_option : options_file -> *)
 (*   string list ->  string -> 'a option_class -> 'a -> 'a option_record *)
 val option_hook : 'a option_record -> (unit -> unit) -> unit
-
 val string_option : string option_class
-
 val color_option : string option_class
-
 val font_option : string option_class
-
 val int_option : int option_class
-
 val bool_option : bool option_class
-
 val float_option : float option_class
-
 val string2_option : (string * string) option_class
-
 val option_option : 'a option_class -> 'a option option_class
-
 val list_option : 'a option_class -> 'a list option_class
-
 val sum_option : (string * 'a) list -> 'a option_class
-
 val tuple2_option : 'a option_class * 'b option_class -> ('a * 'b) option_class
 
 val tuple3_option :
@@ -475,11 +446,8 @@ val tuple4_option :
   ('a * 'b * 'c * 'd) option_class
 
 val ( !! ) : 'a option_record -> 'a
-
 val ( =:= ) : 'a option_record -> 'a -> unit
-
 val shortname : 'a option_record -> string
-
 val get_help : 'a option_record -> string
 
 type option_value =
@@ -496,31 +464,17 @@ val define_option_class :
   string -> (option_value -> 'a) -> ('a -> option_value) -> 'a option_class
 
 val to_value : 'a option_class -> 'a -> option_value
-
 val from_value : 'a option_class -> option_value -> 'a
-
 val value_to_string : option_value -> string
-
 val string_to_value : string -> option_value
-
 val value_to_int : option_value -> int
-
 val int_to_value : int -> option_value
-
 val bool_of_string : string -> bool
-
 val value_to_bool : option_value -> bool
-
 val bool_to_value : bool -> option_value
-
 val value_to_float : option_value -> float
-
 val float_to_value : float -> option_value
-
 val value_to_string2 : option_value -> string * string
-
 val string2_to_value : string * string -> option_value
-
 val value_to_list : (option_value -> 'a) -> option_value -> 'a list
-
 val list_to_value : ('a -> option_value) -> 'a list -> option_value
