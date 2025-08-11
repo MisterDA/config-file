@@ -22,24 +22,24 @@
 (*********************************************************************************)
 
 (** This module implements a mechanism to handle configuration files. A
-   configuration file is defined as a set of [variable = value] lines, where
-   value can be
+    configuration file is defined as a set of [variable = value] lines, where
+    value can be
 
     - a simple string (types [int], [string], [bool]…);
     - a list of values between brackets (lists) or parentheses (tuples);
     - or a set of [variable = value] lines between braces.
 
-   The configuration file is automatically loaded and saved, and configuration
-   parameters are manipulated inside the program as easily as references.
+    The configuration file is automatically loaded and saved, and configuration
+    parameters are manipulated inside the program as easily as references.
 
-   Object implementation by Jean-Baptiste Rouquier. *)
+    Object implementation by Jean-Baptiste Rouquier. *)
 
 (** {1:lowlevelinterface Low level interface} *)
 
 (** Skip this section on a first reading... *)
 
-(** The type of Configuration Parameter, in short {e cp }, freshly parsed from
-   a configuration file, not yet wrapped in their proper type. *)
+(** The type of Configuration Parameter, in short {e cp}, freshly parsed from a
+    configuration file, not yet wrapped in their proper type. *)
 module Raw : sig
   type cp =
     | String of string  (** base types, reproducing the tokens of Genlex *)
@@ -58,12 +58,12 @@ end
 
 type 'a wrappers = { to_raw : 'a -> Raw.cp; of_raw : Raw.cp -> 'a }
 (** A type used to specialize polymorphics classes and define new classes.
-   {!section:predefined_wrappers} are provided. *)
+    {!section:predefined_wrappers} are provided. *)
 
 exception Wrong_type of (out_channel -> unit)
 (** An exception raised by {!Config_file.cp.set_raw} when the argument doesn't
-   have a suitable {!Config_file.Raw.cp} type. The function explains the problem
-   and flushes the output. *)
+    have a suitable {!Config_file.Raw.cp} type. The function explains the
+    problem and flushes the output. *)
 
 (* (\** {2 Miscellaneous functions} *\) *)
 
@@ -74,9 +74,8 @@ exception Wrong_type of (out_channel -> unit)
 (** {2 The two main classes} *)
 
 (** A Configuration Parameter, in short {e cp}, i.e. a value we can store in and
-   read from a configuration file. *)
+    read from a configuration file. *)
 class type ['a] cp = object
-
   (** {3 Accessing methods} *)
 
   method get : 'a
@@ -91,16 +90,16 @@ class type ['a] cp = object
   (** {3 Miscellaneous} *)
 
   method add_hook : ('a -> 'a -> unit) -> unit
-  (** All the hooks are executed each time the method set is called, just
-       after setting the new value.*)
+  (** All the hooks are executed each time the method set is called, just after
+      setting the new value.*)
 
   method set_short_name : string -> unit
   (** Used to generate command line arguments in
-       {!Config_file.group.command_line_args}. *)
+      {!Config_file.group.command_line_args}. *)
 
   method get_short_name : string option
   (** [None] if no optional short_name was provided during object creation and
-       [set_short_name] was never called.*)
+      [set_short_name] was never called.*)
 
   (** {3 Methods for internal use} *)
 
@@ -122,33 +121,32 @@ type groupable_cp =
   ; reset : unit
   ; set_raw : Raw.cp -> unit >
 (** Unification over all possible ['a cp]: contains the main methods of ['a cp]
-   except the methods using the type ['a]. A [group] manipulates only
-   [groupable_cp] for homogeneity. *)
+    except the methods using the type ['a]. A [group] manipulates only
+    [groupable_cp] for homogeneity. *)
 
 exception Double_name
 (** Raised in case a name is already used. See {!Config_file.group.add}. *)
 
 exception Missing_cp of groupable_cp
 (** An exception possibly raised if we want to check that every cp is defined in
-   a configuration file. See {!Config_file.group.read}. *)
+    a configuration file. See {!Config_file.group.read}. *)
 
 (** A group of cps, that can be loaded and saved, or used to generate command
-   line arguments.
+    line arguments.
 
-   The basic usage is to have only one group and one configuration file, but
-   this mechanism allows to have more, for instance to have another smaller
-   group for the options to pass on the command line. *)
+    The basic usage is to have only one group and one configuration file, but
+    this mechanism allows to have more, for instance to have another smaller
+    group for the options to pass on the command line. *)
 class group : object
   (*     method add : 'a cp -> 'a cp *)
   method add : 'a cp -> unit
-  (** Adds a cp to the group. Note that the type ['a] must be lost to allow
-       cps of different types to belong to the same group.
+  (** Adds a cp to the group. Note that the type ['a] must be lost to allow cps
+      of different types to belong to the same group.
 
-       @raise Double_name if [cp#get_name] is already used. *)
+      @raise Double_name if [cp#get_name] is already used. *)
 
   method write : ?with_help:bool -> string -> unit
-  (** [write filename] saves all the cps into the configuration file
-       [filename].*)
+  (** [write filename] saves all the cps into the configuration file [filename].*)
 
   method read :
     ?obsoletes:string ->
@@ -163,14 +161,14 @@ class group : object
     string ->
     unit
   (** [read filename] reads [filename] and stores the values it specifies into
-       the cps belonging to this group. The file is created (and not read) if it
-       doesn't exists. In the default behaviour, no warning is issued. If not
-       all cps are updated or if some values of [filename] aren't used.
+      the cps belonging to this group. The file is created (and not read) if it
+      doesn't exists. In the default behaviour, no warning is issued. If not all
+      cps are updated or if some values of [filename] aren't used.
 
       If [obsoletes] is specified, then prints in this file all the values that
       are in [filename] but not in this group. Those cps are likely to be
-      erroneous or obsolete. Opens this file only if there is something to
-      write in it.
+      erroneous or obsolete. Opens this file only if there is something to write
+      in it.
 
       If [no_default] is [true], then raises [Missing_cp foo] if the cp [foo]
       isn't defined in [filename] but belongs to this group.
@@ -192,35 +190,36 @@ class group : object
     string ->
     unit
   (** [read_string string] reads the content of [string] and stores the values
-       it specifies into the cps belonging to this group.
+      it specifies into the cps belonging to this group.
 
-        This method behaves just like read for the others aspects. *)
+      This method behaves just like read for the others aspects. *)
 
   method command_line_args :
     section_separator:string -> (string * Arg.spec * string) list
   (** Interface with module Arg.
 
-       @param section_separator the string used to concatenate the name of a cp,
-              to get the command line option name. ["-"] is a good default.
+      @param section_separator
+        the string used to concatenate the name of a cp, to get the command line
+        option name. ["-"] is a good default.
 
-       @return a list that can be used with [Arg.parse] and [Arg.usage]. *)
+      @return a list that can be used with [Arg.parse] and [Arg.usage]. *)
 end
 
 (** {2:predefined_cp_classes Predefined cp classes} *)
 
 (** The last three non-optional arguments are always [name] (of type string
-   list), [default_value] and [help] (of type string).
+    list), [default_value] and [help] (of type string).
 
-   [name] is the path to the cp: [["section";"subsection"; ...; "foo"]]. It can
-   consists of a single element but must not be empty.
+    [name] is the path to the cp: [["section";"subsection"; ...; "foo"]]. It can
+    consists of a single element but must not be empty.
 
-   [short_name] will be added a "-" and used in
-   {!Config_file.group.command_line_args}.
+    [short_name] will be added a "-" and used in
+    {!Config_file.group.command_line_args}.
 
-   [group], if provided, adds the freshly defined option to it (something like
-   [initializer group#add self]).
+    [group], if provided, adds the freshly defined option to it (something like
+    [initializer group#add self]).
 
-   [help] needs not contain newlines, it will be automatically truncated where
+    [help] needs not contain newlines, it will be automatically truncated where
     needed. It is mandatory but can be [""]. *)
 
 class int_cp :
@@ -351,12 +350,17 @@ val option_wrappers : 'a wrappers -> 'a option wrappers
 
 val enumeration_wrappers : (string * 'a) list -> 'a wrappers
 (** If you have a [type suit = Spades | Hearts | Diamond | Clubs], then
-{[
-enumeration_wrappers
-  ["spades",Spades; "hearts",Hearts; "diamond",Diamond; "clubs",Clubs]
-]}
-   will allow you to use cp of this type. For sum types with not only constant
-   constructors, you will need to define your own cp class. *)
+    {[
+      enumeration_wrappers
+        [
+          ("spades", Spades);
+          ("hearts", Hearts);
+          ("diamond", Diamond);
+          ("clubs", Clubs);
+        ]
+    ]}
+    will allow you to use cp of this type. For sum types with not only constant
+    constructors, you will need to define your own cp class. *)
 
 val tuple2_wrappers : 'a wrappers -> 'b wrappers -> ('a * 'b) wrappers
 
@@ -381,34 +385,35 @@ class ['a] cp_custom_type :
   string ->
   ['a] cp
 (** To define a new cp class, you just have to provide an implementation for the
-   wrappers between your type [foo] and the type {!Raw.cp}.
+    wrappers between your type [foo] and the type {!Raw.cp}.
 
+    Once you have your wrappers [w], write
+    {[
+      class foo_cp = [foo] cp_custom_type w
+    ]}
 
-   Once you have your wrappers [w], write
-{[
-class foo_cp = [foo] cp_custom_type w
-]}
-
-   For further details, have a look at the commented .ml file, section
-   {!section:predefined_cp_classes}. *)
+    For further details, have a look at the commented .ml file, section
+    {!section:predefined_cp_classes}. *)
 
 (** {1 Backward compatibility}
 
-   All the functions from the module Options are available, except:
+    All the functions from the module Options are available, except:
 
-   - [prune_file]: use [group#write ?obsoletes:"foo.ml"].
-   - [smalllist_to_value], [smalllist_option]: use lists or tuples.
-   - [get_class].
-   - [class_hook]: hooks are local to a cp. If you want hooks global to a class,
-     define a new class that inherits from {!Config_file.cp_custom_type}.
-   - [set_simple_option], [get_simple_option], [simple_options], [simple_args]:
-     use {!Config_file.group.write}.
-   - [set_option_hook]: use {!Config_file.cp.add_hook}.
-   - [set_string_wrappers]: define a new class with {!Config_file.cp_custom_type}.
+    - [prune_file]: use [group#write ?obsoletes:"foo.ml"].
+    - [smalllist_to_value], [smalllist_option]: use lists or tuples.
+    - [get_class].
+    - [class_hook]: hooks are local to a cp. If you want hooks global to a
+      class, define a new class that inherits from
+      {!Config_file.cp_custom_type}.
+    - [set_simple_option], [get_simple_option], [simple_options], [simple_args]:
+      use {!Config_file.group.write}.
+    - [set_option_hook]: use {!Config_file.cp.add_hook}.
+    - [set_string_wrappers]: define a new class with
+      {!Config_file.cp_custom_type}.
 
-   The old configurations files are readable by this module.
+    The old configurations files are readable by this module.
 
-   @deprecated *)
+    @deprecated *)
 
 (**/**)
 
