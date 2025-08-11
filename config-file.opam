@@ -18,7 +18,7 @@ license: "LGPL-2.0-or-later"
 homepage: "https://github.com/MisterDA/config-file"
 bug-reports: "https://github.com/MisterDA/config-file/issues"
 depends: [
-  "dune" {>= "3.16"}
+  "dune" {>= "3.18"}
   "ocaml" {>= "4.02"}
   "camlp-streams"
   "camlp4" {build}
@@ -40,3 +40,4 @@ build: [
   ]
 ]
 dev-repo: "git+https://github.com/MisterDA/config-file.git"
+x-maintenance-intent: ["(latest)"]
