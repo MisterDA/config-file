@@ -1,5 +1,6 @@
 (lang dune 3.18)
 (name config-file)
+(version 1.2.2)
 
 (generate_opam_files true)
 
