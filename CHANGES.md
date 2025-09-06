@@ -1,3 +1,7 @@
+## release-1.2.2 (2025-09-06)  Antonin Décimo  <antonin.decimo@gmail.com>
+
+  * build: depend on camlp-streams for OCaml 5 compatibility
+
 ## release-1.2.1 (2021-09-30)  Antonin Décimo  <antonin@tarides.com>
 
   * build: switch build system to Dune
